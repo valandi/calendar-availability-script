@@ -63,25 +63,23 @@ def get_events_by_date_dictionary(events):
 def main():
     events = get_events(get_api_service())
     events_by_date = get_events_by_date_dictionary(events)
-    next_five_work_dates = getNextFiveWorkDates()
+    next_five_work_dates = get_next_x_work_dates(5)
 
-    print("Here is my availability for the next 5 work days:")
-    times_available = ""
-
+    result = "Here is my availability for the next 5 work days:"
     for date in next_five_work_dates:
-        times_available += date + ": "
+        result += date + ": "
         availability = [AVAILABLE for x in range(0, 96)]
 
         # Mark time before START and after END as unavailable
-        for x in range(0, convertTimeStringTo15MinuteId(START)):
+        for x in range(0, convert_time_string_to_id(START)):
             availability[x] = UNAVAILABLE
-        for y in range(convertTimeStringTo15MinuteId(END), 96):
+        for y in range(convert_time_string_to_id(END), 96):
             availability[y] = UNAVAILABLE
 
         # Mark appointments as unavailable
         for appointment in events_by_date[date]:
-            for x in range(convertTimeStringTo15MinuteId(appointment[0]),
-                           convertTimeStringTo15MinuteId(appointment[1])):
+            for x in range(convert_time_string_to_id(appointment[0]),
+                           convert_time_string_to_id(appointment[1])):
                 availability[x] = UNAVAILABLE
 
         # Construct times available string
@@ -90,18 +88,18 @@ def main():
         for x in range(0, 96):
             if availability[x] == AVAILABLE:
                 if not calculating_availability:
-                    first_available_time = convert15MinuteIdToTimeString(x)
+                    first_available_time = convert_id_to_time_string(x)
                     calculating_availability = True
 
             if availability[x] == UNAVAILABLE:
                 if calculating_availability:
-                    second_available_time = convert15MinuteIdToTimeString(x)
+                    second_available_time = convert_id_to_time_string(x)
                     calculating_availability = False
-                    times_available += first_available_time + TIME_ZONE_STR + " - " + second_available_time + TIME_ZONE_STR + ", "
+                    result += first_available_time + TIME_ZONE_STR + " - " + second_available_time + TIME_ZONE_STR + ", "
 
-        times_available = times_available[:-2] + "\n"  # Remove trailing comma and go to new line
+        result = result[:-2] + "\n"  # Remove trailing comma and go to new line
 
-    print(times_available)
+    print(result)
 
 
 if __name__ == '__main__':
