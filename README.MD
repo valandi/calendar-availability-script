@@ -3,8 +3,8 @@
 ## Usage
 
 ### Get your credentials from Google
-1. Create a new project (it doesn't matter what you name it, we just need the credentials)
 1. Navigate to https://console.cloud.google.com/apis/credentials
+1. Create a new project (it doesn't matter what you name it, we just need the credentials)
 1. Click on "+ CREATE CREDENTIALS"
 1. Choose "Oauth Client ID"
 1. Choose "Application type" "Desktop App"
