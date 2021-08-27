@@ -17,10 +17,12 @@
 ``` git clone https://github.com/valandi/calendar-availability-script.git```
 2. cd into project directory
 ``` cd calendar-availability-script ```
-3. Modify constants as needed (you may need to modify START, END, and TIME_ZONE_STR in constants.py)
-4. Run the script
+3. Install requirements
+``` pip install -r requirements.txt```
+4. Modify constants.py as needed (you will want to modify START, END, and TIME_ZONE_STR in constants.py)
+5. Run the script
 ``` python3 main.py ```
-5. As long as your credentials are set up correctly, you should see a neatly formatted availability for the next 5 work days!
+6. As long as your credentials are set up correctly, you should see a neatly formatted availability for the next 5 work days!
 
 ### Sample output
 Here is my availability for the next 5 work days:
