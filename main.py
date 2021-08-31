@@ -6,6 +6,7 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from time_utils import *
 from constants import *
+from config_variables import *
 from datetime import datetime
 
 
@@ -34,7 +35,7 @@ def get_events(service):
     events_result = service.events().list(
         calendarId='primary',
         timeMin=datetime.utcnow().isoformat() + 'Z',
-        maxResults=100,
+        maxResults=MAX_EVENTS_TO_FETCH,
         singleEvents=True,
         orderBy=EVENT_START_TIME_ORDERBY) \
         .execute()
@@ -47,13 +48,16 @@ def get_events_by_date_dictionary(events):
     events_by_date = {}
 
     for event in events:
-        date = str(event[EVENT_START].get(EVENT_DATETIME)).split("T")[0]
+        event_start_split = str(event[EVENT_START].get(EVENT_DATETIME)).split("T")
+        event_end_split = str(event[EVENT_END].get(EVENT_DATETIME)).split("T")
+
+        date = event_start_split[0]
 
         if date not in events_by_date.keys():
             events_by_date[date] = []
 
-        start_time = str(event[EVENT_START].get(EVENT_DATETIME)).split("T")[1][0:8]
-        end_time = str(event[EVENT_END].get(EVENT_DATETIME)).split("T")[1][0:8]
+        start_time = event_start_split[1][0:8]
+        end_time = event_end_split[1][0:8]
 
         events_by_date[date].append([start_time, end_time])
 
@@ -65,7 +69,7 @@ def main():
     events_by_date = get_events_by_date_dictionary(events)
     next_five_work_dates = get_next_x_work_dates(5)
 
-    result = "Here is my availability for the next 5 work days:"
+    result = INITIAL_MESSAGE + ":\n"
     for date in next_five_work_dates:
         result += date + ": "
         availability = [AVAILABLE for x in range(0, 96)]

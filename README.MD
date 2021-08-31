@@ -10,7 +10,7 @@
 1. Choose "Application type" "Desktop App"
 1. Click "CREATE"
 1. Under "Actions", click the arrow to download your credentials
-1. Place credentials in same directory as "main.py" and save as certs.json. 
+1. Save your credentials as "certs.json" in the certs/ directory. (You can modify the path in config_variables.py if you want)
 
 ### Use the script
 1. Clone the repo:
@@ -19,7 +19,7 @@
 ``` cd calendar-availability-script ```
 3. Install requirements
 ``` pip install -r requirements.txt```
-4. Modify constants.py as needed (you will want to modify START, END, and TIME_ZONE_STR in constants.py)
+4. Modify constants.py as needed (you will want to modify START, END, and TIME_ZONE_STR in config_variables.py)
 5. Run the script
 ``` python3 main.py ```
 6. As long as your credentials are set up correctly, you should see a neatly formatted availability for the next 5 work days!
