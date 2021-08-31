@@ -7,7 +7,7 @@ https://docs.python-guide.org/starting/install3/osx/
 https://pip.pypa.io/en/stable/installation/
 
 ## Usage
-### Get your credentials from Google (Should take 5-10 minutes)
+### Get your credentials from Google (Should take about 5 minutes)
 1. Navigate to https://console.cloud.google.com/apis/credentials
 1. Create a new project (it doesn't matter what you name it, we just need the credentials)
 1. Click on "+ CREATE CREDENTIALS"
@@ -30,15 +30,11 @@ https://pip.pypa.io/en/stable/installation/
 6. As long as your credentials are set up correctly, you should see a neatly formatted availability for the next 5 work days!
 
 ### Sample output
+
 Here is my availability for the next 5 work days:
-
 2021-08-27: 10:00EST - 12:00EST, 17:00EST - 18:00EST
-
 2021-08-30: 10:00EST - 12:00EST, 13:00EST - 18:00EST
-
 2021-08-31: 10:00EST - 11:00EST, 11:45EST - 12:30EST, 13:00EST - 18:00EST
-
 2021-09-01: 11:00EST - 12:30EST, 13:00EST - 15:00EST, 16:00EST - 18:00EST
-
 2021-09-02: 10:00EST - 12:30EST, 13:00EST - 18:00EST
 
