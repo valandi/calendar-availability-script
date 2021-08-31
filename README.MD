@@ -19,7 +19,7 @@
 ``` cd calendar-availability-script ```
 3. Install requirements
 ``` pip install -r requirements.txt```
-4. Modify constants.py as needed (you will want to modify START, END, and TIME_ZONE_STR in config_variables.py)
+4. Modify config_variables.py as needed (you will want to modify START, END, and TIME_ZONE_STR in config_variables.py)
 5. Run the script
 ``` python3 main.py ```
 6. As long as your credentials are set up correctly, you should see a neatly formatted availability for the next 5 work days!
