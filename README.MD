@@ -1,13 +1,18 @@
 # Calendar Availability
 
-## Usage
+## Pre-requisites 
+1. Ensure that Python3 is installed on MAC (try ``` python3 -v ```)
+https://docs.python-guide.org/starting/install3/osx/
+2. Ensure that pip is installed (try ``` pip --version```)
+https://pip.pypa.io/en/stable/installation/
 
-### Get your credentials from Google
+## Usage
+### Get your credentials from Google (Should take 5-10 minutes)
 1. Navigate to https://console.cloud.google.com/apis/credentials
 1. Create a new project (it doesn't matter what you name it, we just need the credentials)
 1. Click on "+ CREATE CREDENTIALS"
 1. Choose "Oauth Client ID"
-1. Choose "Application type" "Desktop App"
+1. Choose "Application type" > "Desktop App"
 1. Click "CREATE"
 1. Under "Actions", click the arrow to download your credentials
 1. Save your credentials as "certs.json" in the certs/ directory. (You can modify the path in config_variables.py if you want)

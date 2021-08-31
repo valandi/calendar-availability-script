@@ -4,27 +4,30 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from utils.time_utils import *
-from constants.constants import *
-from config import *
+import config
+import constants.constants as constants
+from utils.time_utils import get_next_x_work_dates, convert_time_string_to_id, convert_id_to_time_string
 from datetime import datetime
 
+# TODO:
+# 1. Authenticate with OAuth instead (for easier configuration)
+# 2. Make this into a Chrome extension
 
 # Read credentials from local JSON and return the Google Calendar API service
 def get_api_service():
     creds = None
-    if os.path.exists(TOKEN_JSON):
-        creds = Credentials.from_authorized_user_file(TOKEN_JSON, SCOPES)
+    if os.path.exists(config.TOKEN_JSON):
+        creds = Credentials.from_authorized_user_file(config.TOKEN_JSON, config.SCOPES)
 
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                CERTS_JSON, SCOPES)
+                config.CERTS_JSON, config.SCOPES)
             creds = flow.run_local_server(port=0)
 
-        with open(TOKEN_JSON, 'w') as token:
+        with open(config.TOKEN_JSON, 'w') as token:
             token.write(creds.to_json())  # Cache credentials
 
     return build('calendar', 'v3', credentials=creds)
@@ -35,9 +38,9 @@ def get_events(service):
     events_result = service.events().list(
         calendarId='primary',
         timeMin=datetime.utcnow().isoformat() + 'Z',
-        maxResults=MAX_EVENTS_TO_FETCH,
+        maxResults=config.MAX_EVENTS_TO_FETCH,
         singleEvents=True,
-        orderBy=EVENT_START_TIME_ORDERBY) \
+        orderBy=constants.EVENT_START_TIME_ORDERBY) \
         .execute()
     events = events_result.get('items', [])
 
@@ -48,8 +51,8 @@ def get_events_by_date_dictionary(events):
     events_by_date = {}
 
     for event in events:
-        event_start_split = str(event[EVENT_START].get(EVENT_DATETIME)).split("T")
-        event_end_split = str(event[EVENT_END].get(EVENT_DATETIME)).split("T")
+        event_start_split = str(event[constants.EVENT_START].get(constants.EVENT_DATETIME)).split("T")
+        event_end_split = str(event[constants.EVENT_END].get(constants.EVENT_DATETIME)).split("T")
 
         date = event_start_split[0]
 
@@ -67,39 +70,44 @@ def get_events_by_date_dictionary(events):
 def main():
     events = get_events(get_api_service())
     events_by_date = get_events_by_date_dictionary(events)
-    next_five_work_dates = get_next_x_work_dates(5)
+    next_five_work_dates = get_next_x_work_dates(config.DAYS_TO_GET_AVAILABILITY_FOR)
 
-    result = INITIAL_MESSAGE + ":\n"
+    result = config.INITIAL_MESSAGE + ":\n"
     for date in next_five_work_dates:
+
+        if date not in events_by_date.keys():
+            events_by_date[date] = []
+
         result += date + ": "
-        availability = [AVAILABLE for x in range(0, 96)]
+        availability = [constants.AVAILABLE for x in range(0, 96)]
 
         # Mark time before START and after END as unavailable
-        for x in range(0, convert_time_string_to_id(START)):
-            availability[x] = UNAVAILABLE
-        for y in range(convert_time_string_to_id(END), 96):
-            availability[y] = UNAVAILABLE
+        for x in range(0, convert_time_string_to_id(config.START)):
+            availability[x] = constants.UNAVAILABLE
+        for y in range(convert_time_string_to_id(config.END), 96):
+            availability[y] = constants.UNAVAILABLE
 
         # Mark appointments as unavailable
         for appointment in events_by_date[date]:
             for x in range(convert_time_string_to_id(appointment[0]),
                            convert_time_string_to_id(appointment[1])):
-                availability[x] = UNAVAILABLE
+                availability[x] = constants.UNAVAILABLE
 
         # Construct times available string
         calculating_availability = False
         first_available_time, second_available_time = "", ""
         for x in range(0, 96):
-            if availability[x] == AVAILABLE:
+            if availability[x] == constants.AVAILABLE:
                 if not calculating_availability:
                     first_available_time = convert_id_to_time_string(x)
                     calculating_availability = True
 
-            if availability[x] == UNAVAILABLE:
+            if availability[x] == constants.UNAVAILABLE:
                 if calculating_availability:
                     second_available_time = convert_id_to_time_string(x)
                     calculating_availability = False
-                    result += first_available_time + TIME_ZONE_STR + " - " + second_available_time + TIME_ZONE_STR + ", "
+                    result += first_available_time + config.TIME_ZONE_STR + " - " + second_available_time + \
+                              config.TIME_ZONE_STR + ", "
 
         result = result[:-2] + "\n"  # Remove trailing comma and go to new line
 
