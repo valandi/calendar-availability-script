@@ -4,9 +4,9 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from time_utils import *
-from constants import *
-from config_variables import *
+from utils.time_utils import *
+from constants.constants import *
+from config import *
 from datetime import datetime
 
 
